@@ -1,9 +1,6 @@
 import matplotlib as mpl
 import pandas as pd
 import streamlit as st
-from dotenv import load_dotenv
-
-MAPBOX_TOKEN = load_dotenv("MAPBOX_TOKEN")
 
 
 mpl.style.use("default")
