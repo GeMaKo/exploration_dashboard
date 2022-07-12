@@ -1,8 +1,6 @@
 import matplotlib as mpl
 import pandas as pd
 import streamlit as st
-from sklearn.preprocessing import StandardScaler
-from sklearn.preprocessing import LabelEncoder
 from dotenv import load_dotenv
 
 MAPBOX_TOKEN = load_dotenv("MAPBOX_TOKEN")
