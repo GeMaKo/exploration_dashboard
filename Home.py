@@ -1,5 +1,4 @@
 import matplotlib as mpl
-import matplotlib.pyplot as plt
 import pandas as pd
 import streamlit as st
 from sklearn.preprocessing import StandardScaler
