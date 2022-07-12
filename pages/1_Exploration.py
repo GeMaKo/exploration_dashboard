@@ -10,8 +10,14 @@ st.set_page_config(page_title="Datenverständnis")
 st.markdown("# Datenverständnis")
 st.sidebar.header("Datenverständnis")
 
-housing_data = pd.read_csv("data/housing.csv")
 
+@st.cache()
+def load_data():
+    housing_data = pd.read_csv("data/housing.csv")
+    return housing_data
+
+
+housing_data = load_data()
 
 # Univariate Plots
 st.sidebar.markdown("### Histogramme")
