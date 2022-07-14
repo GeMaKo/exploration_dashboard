@@ -19,9 +19,12 @@ st.set_page_config(page_title="Evaluation")
 st.markdown("# Evaluation")
 st.sidebar.header("Evaluation")
 
-housing_raw = pd.read_csv("data/housing.csv")
-housing_labels = housing_raw["median_house_value"].copy()
-housing_data = housing_raw.drop("median_house_value", axis=1).copy()
+if "housing_data" not in st.session_state:
+    st.session_state["housing_data"] = pd.read_csv("data/housing.csv")
+housing_data = st.session_state["housing_data"]
+
+housing_labels = housing_data["median_house_value"].copy()
+housing_features = housing_data.drop("median_house_value", axis=1).copy()
 
 from sklearn.model_selection import train_test_split
 
@@ -39,7 +42,7 @@ numeric_features = [
 ]
 
 X_train, X_test, y_train, y_test = train_test_split(
-    housing_data, housing_labels, test_size=0.2, random_state=42
+    housing_features, housing_labels, test_size=0.2, random_state=42
 )
 
 numeric_transformer = Pipeline(

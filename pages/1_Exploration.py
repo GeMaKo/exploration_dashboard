@@ -10,8 +10,9 @@ st.set_page_config(page_title="Datenverständnis")
 st.markdown("# Datenverständnis")
 st.sidebar.header("Datenverständnis")
 
-
-housing_data = st.session_state['housing_data']
+if "housing_data" not in st.session_state:
+    st.session_state["housing_data"] = pd.read_csv("data/housing.csv")
+housing_data = st.session_state["housing_data"]
 
 # Univariate Plots
 st.sidebar.markdown("### Histogramme")
