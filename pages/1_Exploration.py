@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
-import streamlit as st
 import pandas as pd
+import streamlit as st
 from sklearn.preprocessing import LabelEncoder
 
 labelencoder = LabelEncoder()
@@ -12,15 +12,17 @@ st.sidebar.header("Datenverständnis")
 
 if "housing_data" not in st.session_state:
     st.session_state["housing_data"] = pd.read_csv("data/housing.csv")
+
 housing_data = st.session_state["housing_data"]
 
 # Univariate Plots
-st.sidebar.markdown("### Histogramme")
+st.sidebar.markdown("## Univariate Plots")
+st.sidebar.markdown("#### [Histogramme](#histogramme) ")
 st.write("### Histogramme")
 
 hist_selections = list(housing_data.columns)
 hist_selections.remove("ocean_proximity")
-hist_data = st.selectbox("Auswahl", options=hist_selections)
+hist_data = st.selectbox("Feature", options=hist_selections, key="histogram")
 bins = st.select_slider("Anzahl Bins", options=[5, 10, 20, 50, 100])
 
 
@@ -28,10 +30,7 @@ bins = st.select_slider("Anzahl Bins", options=[5, 10, 20, 50, 100])
 def hist_plot(hist_data, bins):
 
     fig, ax = plt.subplots()
-    disp = ax.hist(
-        housing_data[hist_data],
-        bins=bins,
-    )
+    disp = ax.hist(housing_data[hist_data], bins=bins, alpha=0.7, edgecolor="k")
     min_ylim, max_ylim = ax.get_ylim()
     min_xlim, max_xlim = ax.get_xlim()
     x_range = abs(max_xlim - min_xlim)
@@ -58,9 +57,28 @@ def hist_plot(hist_data, bins):
 
 st.pyplot(hist_plot(hist_data, bins))
 
+st.sidebar.markdown("#### [Box Plots](#box-plots) ")
+st.write("### Box Plots")
+
+boxplot_selections = list(housing_data.columns)
+boxplot_selections.remove("ocean_proximity")
+boxplot_data = st.selectbox("Feature", options=boxplot_selections, key="boxplot")
+
+
+@st.cache(allow_output_mutation=True)
+def box_plot(boxplot_data):
+
+    fig, ax = plt.subplots()
+    fig_data = ax.boxplot(housing_data[boxplot_data], bootstrap=1000, autorange=True, showmeans=True)
+    
+    return fig
+
+
+st.pyplot(box_plot(boxplot_data))
 
 # Multivariate Plots
-st.sidebar.markdown("### Scatter Plots")
+st.sidebar.markdown("## Multivariate Plots")
+st.sidebar.markdown("#### [Scatter Plots](#scatter-plots) ")
 st.write("### Scatter Plots")
 
 widget_key = 0
