@@ -11,13 +11,7 @@ st.markdown("# Datenverständnis")
 st.sidebar.header("Datenverständnis")
 
 
-@st.cache()
-def load_data():
-    housing_data = pd.read_csv("data/housing.csv")
-    return housing_data
-
-
-housing_data = load_data()
+housing_data = st.session_state['housing_data']
 
 # Univariate Plots
 st.sidebar.markdown("### Histogramme")
