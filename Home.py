@@ -14,7 +14,8 @@ st.sidebar.success("Wähle einen Schritt aus dem Workflow aus.")
 if "housing_data" not in st.session_state:
     st.session_state["housing_data"] = pd.read_csv("data/housing.csv")
 
-st.dataframe(st.session_state["housing_data"].head())
+housing_data = st.session_state["housing_data"]
+st.dataframe(housing_data.head())
 
 
 # Scatter plot of geo data
