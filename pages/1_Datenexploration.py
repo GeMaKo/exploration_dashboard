@@ -16,67 +16,63 @@ if "data" not in st.session_state:
 else:
     data = st.session_state["data"]
     df = data["frame"]
+    
+    feature = st.selectbox("Feature", options=df.columns)
 
     # Univariate Plots
     st.sidebar.markdown("## Univariate Plots")
     st.sidebar.markdown("#### [Histogramme](#histogramme) ")
     st.write("### Histogramme")
 
-    hist_selections = list(df.columns)
-    hist_data = st.selectbox("Feature", options=hist_selections, key="histogram")
     bins = st.select_slider("Anzahl Bins", options=[5, 10, 20, 50, 100])
 
 
     @st.cache(allow_output_mutation=True)
-    def hist_plot(hist_data, bins):
+    def hist_plot(col: str, bins: int):
 
         fig, ax = plt.subplots()
-        disp = ax.hist(df[hist_data], bins=bins, alpha=0.7, edgecolor="k")
+        disp = ax.hist(df[col], bins=bins, alpha=0.7, edgecolor="k")
         min_ylim, max_ylim = ax.get_ylim()
         min_xlim, max_xlim = ax.get_xlim()
         x_range = abs(max_xlim - min_xlim)
         ax.axvline(
-            df[hist_data].mean(), color="k", linestyle="dashed", linewidth=1
+            df[col].mean(), color="k", linestyle="dashed", linewidth=1
         )
         ax.text(
-            df[hist_data].mean() + x_range * 0.02,
+            df[col].mean() + x_range * 0.02,
             max_ylim * 0.9,
-            "Mean: {:.2f}".format(df[hist_data].mean()),
+            "Mean: {:.2f}".format(df[col].mean()),
         )
         ax.axvline(
-            df[hist_data].median(), color="k", linestyle="solid", linewidth=1
+            df[col].median(), color="k", linestyle="solid", linewidth=1
         )
         ax.text(
-            df[hist_data].median() + x_range * 0.02,
+            df[col].median() + x_range * 0.02,
             max_ylim * 0.8,
-            "Median: {:.2f}".format(df[hist_data].median()),
+            "Median: {:.2f}".format(df[col].median()),
         )
-        ax.set_xlabel(hist_data)
+        ax.set_xlabel(col)
 
         return fig
 
 
-    st.pyplot(hist_plot(hist_data, bins))
+    st.pyplot(hist_plot(feature, bins))
 
     st.sidebar.markdown("#### [Box Plots](#box-plots) ")
     st.write("### Box Plots")
 
-    boxplot_selections = list(df.columns)
-    boxplot_data = st.selectbox("Feature", options=boxplot_selections, key="boxplot")
-
-
     @st.cache(allow_output_mutation=True)
-    def box_plot(boxplot_data):
+    def box_plot(col: str):
 
         fig, ax = plt.subplots()
         fig_data = ax.boxplot(
-            df[boxplot_data], bootstrap=1000, autorange=True, showmeans=True
+            df[col], bootstrap=1000, autorange=True, showmeans=True
         )
 
         return fig
 
 
-    st.pyplot(box_plot(boxplot_data))
+    st.pyplot(box_plot(feature))
 
     # Multivariate Plots
     st.sidebar.markdown("## Multivariate Plots")

@@ -32,6 +32,7 @@ def load_data_into_session(dataset: str):
     loader = DATASET_LOADER[dataset]
     if dataset != "Olivetti Faces":
         st.session_state["data"] = loader(as_frame=True)
+        st.session_state["dataset"] = dataset
     else:
         data = loader(shuffle=True)
         df = pd.DataFrame(data["data"])
@@ -39,8 +40,13 @@ def load_data_into_session(dataset: str):
         st.session_state["data"] = data
         st.session_state["data"]["frame"] = df
 
+if "dataset" in st.session_state:
+    dataset = st.session_state["dataset"]
+    default_index = list(DATASET_LOADER.keys()).index(dataset)
+else: 
+    default_index = 0
 
-dataset = st.selectbox("Datensatz", options=DATASET_LOADER.keys())
+dataset = st.selectbox("Datensatz", options=DATASET_LOADER.keys(), index=default_index)
 load_data_into_session(dataset)
 
 st.markdown("### Weitere Infos")
