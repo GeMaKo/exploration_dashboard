@@ -1,23 +1,20 @@
-import matplotlib as mpl
-import pandas as pd
 import streamlit as st
+from PIL import Image
 
-mpl.style.use("default")
 
-st.set_page_config(page_title="Machine Learning Workflow", layout="wide")
-st.markdown("# Übersicht")
+st.set_page_config(page_title="Machine Learning Workflow - Home", layout="wide")
+
 st.sidebar.header("Übersicht")
 st.sidebar.success("Wähle einen Schritt aus dem Workflow aus.")
 
-if "housing_data" not in st.session_state:
-    st.session_state["housing_data"] = pd.read_csv("data/housing.csv")
+st.markdown("# Übersicht")
 
-housing_data = st.session_state["housing_data"]
+st.header("CRISP-DM")
 
-st.write(f"Number samples: {housing_data.shape[0]}")
-st.write(f"Number features: {housing_data.shape[1]}")
+img = Image.open("rsc/img/crisp-dm.png")
+st.image(img)
 
-st.dataframe(housing_data.head())
+st.header("Machine Learning Workflow")
 
-# More dimensions
-st.map(housing_data)
+img = Image.open("rsc/img/ml-workflow.jpg")
+st.image(img)
