@@ -1,7 +1,11 @@
 import matplotlib.pyplot as plt
 import pandas as pd
+import seaborn as sns
 import streamlit as st
 from sklearn.preprocessing import LabelEncoder
+
+sns.set_style("darkgrid")
+sns.set_palette("tab10")
 
 labelencoder = LabelEncoder()
 
@@ -16,8 +20,12 @@ if "data" not in st.session_state:
 else:
     data = st.session_state["data"]
     df = data["frame"]
-    
-    feature = st.selectbox("Feature", options=df.columns)
+
+    feature = st.selectbox("Variable", options=df.columns)
+    hue_options = list(df.columns) + [None]
+    hue_var = st.selectbox(
+        "Trennvariable", options=hue_options, index=hue_options.index(None)
+    )
 
     # Univariate Plots
     st.sidebar.markdown("## Univariate Plots")
@@ -25,27 +33,47 @@ else:
     st.write("### Histogramme")
 
     bins = st.select_slider("Anzahl Bins", options=[5, 10, 20, 50, 100])
+    kde = st.checkbox("Dichteschätzer")
+    log_scale = st.checkbox("Log. Skalierung")
 
-
-    @st.cache(allow_output_mutation=True)
-    def hist_plot(col: str, bins: int):
+    def hist_plot(
+        col: str, bins: int, kde: bool = False, log_scale: bool = False, hue: str = None
+    ):
 
         fig, ax = plt.subplots()
-        disp = ax.hist(df[col], bins=bins, alpha=0.7, edgecolor="k")
+
+        if hue is None:
+            sns.histplot(
+                df,
+                x=col,
+                bins=bins,
+                ax=ax,
+                kde=kde,
+                stat="count",
+                log_scale=log_scale,
+            )
+        else:
+            sns.histplot(
+                df,
+                x=col,
+                bins=bins,
+                ax=ax,
+                kde=kde,
+                stat="count",
+                log_scale=log_scale,
+                hue=df[hue].astype(str),
+                multiple="layer",
+            )
         min_ylim, max_ylim = ax.get_ylim()
         min_xlim, max_xlim = ax.get_xlim()
         x_range = abs(max_xlim - min_xlim)
-        ax.axvline(
-            df[col].mean(), color="k", linestyle="dashed", linewidth=1
-        )
+        ax.axvline(df[col].mean(), color="k", linestyle="dashed", linewidth=1)
         ax.text(
             df[col].mean() + x_range * 0.02,
             max_ylim * 0.9,
             "Mean: {:.2f}".format(df[col].mean()),
         )
-        ax.axvline(
-            df[col].median(), color="k", linestyle="solid", linewidth=1
-        )
+        ax.axvline(df[col].median(), color="k", linestyle="solid", linewidth=1)
         ax.text(
             df[col].median() + x_range * 0.02,
             max_ylim * 0.8,
@@ -55,24 +83,28 @@ else:
 
         return fig
 
-
-    st.pyplot(hist_plot(feature, bins))
+    st.pyplot(hist_plot(feature, bins, kde, log_scale, hue_var))
 
     st.sidebar.markdown("#### [Box Plots](#box-plots) ")
     st.write("### Box Plots")
 
+    show_outlier = st.checkbox("Zeige Outlier", value=True)
+
     @st.cache(allow_output_mutation=True)
-    def box_plot(col: str):
+    def box_plot(col: str, show_outlier: bool = True):
 
         fig, ax = plt.subplots()
         fig_data = ax.boxplot(
-            df[col], bootstrap=1000, autorange=True, showmeans=True
+            df[col],
+            bootstrap=1000,
+            autorange=True,
+            showmeans=True,
+            showfliers=show_outlier,
         )
 
         return fig
 
-
-    st.pyplot(box_plot(feature))
+    st.pyplot(box_plot(feature, show_outlier))
 
     # Multivariate Plots
     st.sidebar.markdown("## Multivariate Plots")
@@ -80,61 +112,56 @@ else:
     st.write("### Scatter Plots")
 
     widget_key = 0
-    scatter_x = st.selectbox(
-        "X-Achse", options=df.columns, key=widget_key, index=0
-    )
+    scatter_x = st.selectbox("X-Achse", options=df.columns, key=widget_key, index=0)
     widget_key += 1
-    scatter_y = st.selectbox(
-        "Y-Achse", options=df.columns, key=widget_key, index=1
-    )
+    scatter_y = st.selectbox("Y-Achse", options=df.columns, key=widget_key, index=1)
     opt_selections = [x for x in df.columns] + [None]
-    scatter_color_selection = st.selectbox(
-        "Farbe", options=opt_selections, key=widget_key, index=opt_selections.index(None)
-    )
-    if scatter_color_selection == None:
-        scatter_color = None
-    elif df.dtypes[scatter_color_selection] == "object":
-        scatter_color = labelencoder.fit_transform(df[scatter_color_selection])
-    else:
-        scatter_color = df[scatter_color_selection]
-        
-    widget_key += 1
-    scatter_size_selection = st.selectbox(
-        "Größe", options=opt_selections, key=widget_key, index=opt_selections.index(None)
-    )
-    widget_key += 1
-    scatter_size_ratio = st.select_slider(
-        "Größenratio",
-        options=[0.5, 1, 2, 5, 10, 20, 50, 100, 200],
+    scatter_color = st.selectbox(
+        "Farbe",
+        options=opt_selections,
         key=widget_key,
+        index=opt_selections.index(None),
     )
-    if scatter_size_selection == None:
-        scatter_size = 100 / scatter_size_ratio
-    elif scatter_size_selection == "ocean_proximity":
+    widget_key += 1
+    scatter_size = st.selectbox(
+        "Größe",
+        options=opt_selections,
+        key=widget_key,
+        index=opt_selections.index(None),
+    )
+    widget_key += 1
+    alpha = st.slider("Alpha", min_value=0.01, max_value=1.0, value=0.7)
 
-        scatter_size = labelencoder.fit_transform(df[scatter_size_selection])
-
-    else:
-        scatter_size = df[scatter_size_selection] / scatter_size_ratio
-
-
-    @st.cache(allow_output_mutation=True)
-    def scatter_plot(scatter_x, scatter_y, scatter_color, scatter_size):
+    def scatter_plot(
+        scatter_x: str,
+        scatter_y: str,
+        scatter_color: str,
+        scatter_size: str,
+        alpha: float,
+    ):
 
         fig, ax = plt.subplots()
-        disp = ax.scatter(
-            df[scatter_x],
-            df[scatter_y],
-            alpha=0.1,
-            s=scatter_size,
-            label=scatter_size,
-            c=scatter_color,
-            cmap=plt.get_cmap("nipy_spectral"),
-        )
-        ax.set_xlabel(scatter_x)
-        ax.set_ylabel(scatter_y)
-        fig.colorbar(disp, ax=ax)
+
+        if scatter_color is None:
+            sns.scatterplot(
+                data=df,
+                x=scatter_x,
+                y=scatter_y,
+                alpha=alpha,
+                size=scatter_size,
+                ax=ax,
+            )
+        else:
+            sns.scatterplot(
+                data=df,
+                x=scatter_x,
+                y=scatter_y,
+                alpha=alpha,
+                hue=df[scatter_color].astype(str),
+                size=scatter_size,
+                ax=ax,
+            )
+
         return fig
 
-
-    st.pyplot(scatter_plot(scatter_x, scatter_y, scatter_color, scatter_size))
+    st.pyplot(scatter_plot(scatter_x, scatter_y, scatter_color, scatter_size, alpha))

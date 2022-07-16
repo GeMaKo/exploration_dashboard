@@ -1,12 +1,7 @@
-from typing import Callable
-import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pandas as pd
-import streamlit as st
-
 import sklearn.datasets
-
-mpl.style.use("default")
+import streamlit as st
 
 st.set_page_config(page_title="Machine Learning Workflow - Datenauswahl", layout="wide")
 
@@ -27,7 +22,6 @@ DATASET_LOADER = {
 st.sidebar.header("Datenauswahl")
 st.sidebar.markdown("#### [Auswahl Datensatz](#auswahl-datensatz)")
 
-
 def load_data_into_session(dataset: str):
     loader = DATASET_LOADER[dataset]
     if dataset != "Olivetti Faces":
@@ -43,7 +37,7 @@ def load_data_into_session(dataset: str):
 if "dataset" in st.session_state:
     dataset = st.session_state["dataset"]
     default_index = list(DATASET_LOADER.keys()).index(dataset)
-else: 
+else:
     default_index = 0
 
 dataset = st.selectbox("Datensatz", options=DATASET_LOADER.keys(), index=default_index)
@@ -54,8 +48,8 @@ st.markdown("### Weitere Infos")
 data = st.session_state["data"]
 df: pd.DataFrame = data["frame"]
 
-st.write(f"Number samples: {df.shape[0]}")
-st.write(f"Number features: {df.shape[1]}")
+st.write(f"Anzahl Beispiele: {df.shape[0]}")
+st.write(f"Anzahl Dimensionen: {df.shape[1]}")
 
 st.dataframe(df.head())
 
