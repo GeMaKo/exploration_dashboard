@@ -2,12 +2,9 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 import streamlit as st
-from sklearn.preprocessing import LabelEncoder
 
 sns.set_style("darkgrid")
 sns.set_palette("tab10")
-
-labelencoder = LabelEncoder()
 
 st.set_page_config(page_title="Datenverständnis")
 
