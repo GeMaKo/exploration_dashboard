@@ -40,27 +40,20 @@ else:
         fig, ax = plt.subplots()
 
         if hue is None:
-            sns.histplot(
-                df,
-                x=col,
-                bins=bins,
-                ax=ax,
-                kde=kde,
-                stat="count",
-                log_scale=log_scale,
-            )
+            hue_values = None
         else:
-            sns.histplot(
-                df,
-                x=col,
-                bins=bins,
-                ax=ax,
-                kde=kde,
-                stat="count",
-                log_scale=log_scale,
-                hue=df[hue].astype(str),
-                multiple="layer",
-            )
+            df[hue].astype(str)
+
+        sns.histplot(
+            df,
+            x=col,
+            bins=bins,
+            ax=ax,
+            kde=kde,
+            stat="count",
+            log_scale=log_scale,
+            hue=hue_values,
+        )
         min_ylim, max_ylim = ax.get_ylim()
         min_xlim, max_xlim = ax.get_xlim()
         x_range = abs(max_xlim - min_xlim)
@@ -140,26 +133,23 @@ else:
         fig, ax = plt.subplots()
 
         if scatter_color is None:
-            sns.scatterplot(
-                data=df,
-                x=scatter_x,
-                y=scatter_y,
-                alpha=alpha,
-                size=scatter_size,
-                ax=ax,
-            )
+            hue_values = None
         else:
-            hue_values = scatter_color if df[scatter_color].nunique() > 10 else df[scatter_color].astype(str)
-            sns.scatterplot(
-                data=df,
-                x=scatter_x,
-                y=scatter_y,
-                alpha=alpha,
-                hue=hue_values,
-                size=scatter_size,
-                ax=ax,
+            hue_values = (
+                scatter_color
+                if df[scatter_color].nunique() > 10
+                else df[scatter_color].astype(str)
             )
 
+        sns.scatterplot(
+            data=df,
+            x=scatter_x,
+            y=scatter_y,
+            alpha=alpha,
+            hue=hue_values,
+            size=scatter_size,
+            ax=ax,
+        )
         return fig
 
     st.pyplot(scatter_plot(scatter_x, scatter_y, scatter_color, scatter_size, alpha))
