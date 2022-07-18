@@ -149,12 +149,13 @@ else:
                 ax=ax,
             )
         else:
+            hue_values = scatter_color if df[scatter_color].nunique() > 10 else df[scatter_color].astype(str)
             sns.scatterplot(
                 data=df,
                 x=scatter_x,
                 y=scatter_y,
                 alpha=alpha,
-                hue=df[scatter_color].astype(str),
+                hue=hue_values,
                 size=scatter_size,
                 ax=ax,
             )
