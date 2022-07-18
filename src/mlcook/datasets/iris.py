@@ -17,6 +17,7 @@ class IrisDataset(Dataset):
         self.data = df
         self.X = bunch["data"]
         self.y = df["class"]
+        self.target = "class"
         self.descr = bunch["DESCR"]
 
     def get_categorical_features(self):
@@ -24,3 +25,9 @@ class IrisDataset(Dataset):
 
     def get_numerical_features(self):
         return tuple(self.X.columns)
+
+    def is_regression(self):
+        return False
+    
+    def is_classification(self):
+        return True
