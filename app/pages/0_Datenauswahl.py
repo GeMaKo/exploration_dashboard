@@ -1,52 +1,40 @@
 import matplotlib.pyplot as plt
 import pandas as pd
-import sklearn.datasets
 import streamlit as st
+
+from mlcook.datasets.manager import DatasetManager
+from mlcook.datasets.base import Dataset
 
 st.set_page_config(page_title="Machine Learning Workflow - Datenauswahl", layout="wide")
 
 st.markdown("### Auswahl Datensatz")
 
-DATASET_LOADER = {
-    "Iris": sklearn.datasets.load_iris,
-    "Diabetes": sklearn.datasets.load_diabetes,
-    "Digits": sklearn.datasets.load_digits,
-    "Wine": sklearn.datasets.load_wine,
-    "Breast Cancer Wisconsin": sklearn.datasets.load_breast_cancer,
-    "Olivetti Faces": sklearn.datasets.fetch_olivetti_faces,
-    "Forest covertypes": sklearn.datasets.fetch_covtype,
-    "California Housing": sklearn.datasets.fetch_california_housing,
-}
-
 # SIDEBAR MENU
 st.sidebar.header("Datenauswahl")
 st.sidebar.markdown("#### [Auswahl Datensatz](#auswahl-datensatz)")
 
+# MAIN PAGE
+manager = DatasetManager()
+
 def load_data_into_session(dataset: str):
-    loader = DATASET_LOADER[dataset]
-    if dataset != "Olivetti Faces":
-        st.session_state["data"] = loader(as_frame=True)
-        st.session_state["dataset"] = dataset
-    else:
-        data = loader(shuffle=True)
-        df = pd.DataFrame(data["data"])
-        df["target"] = data["target"]
-        st.session_state["data"] = data
-        st.session_state["data"]["frame"] = df
+    st.session_state["dataset"] = manager.init_dataset(dataset)
+
 
 if "dataset" in st.session_state:
     dataset = st.session_state["dataset"]
-    default_index = list(DATASET_LOADER.keys()).index(dataset)
+    default_index = list(manager.datasets.keys()).index(dataset.name)
 else:
     default_index = 0
 
-dataset = st.selectbox("Datensatz", options=DATASET_LOADER.keys(), index=default_index)
+dataset = st.selectbox(
+    "Datensatz", options=manager.datasets.keys(), index=default_index
+)
 load_data_into_session(dataset)
 
 st.markdown("### Weitere Infos")
 
-data = st.session_state["data"]
-df: pd.DataFrame = data["frame"]
+dataset: Dataset = st.session_state["dataset"]
+df: pd.DataFrame = dataset.data
 
 st.write(f"Anzahl Beispiele: {df.shape[0]}")
 st.write(f"Anzahl Dimensionen: {df.shape[1]}")
@@ -54,7 +42,7 @@ st.write(f"Anzahl Dimensionen: {df.shape[1]}")
 st.dataframe(df.head())
 
 with st.expander("Beschreibung anzeigen"):
-    st.write(data["DESCR"])
+    st.write(dataset.descr)
 
 if dataset == "California Housing":
     df.columns = [col.lower() for col in df.columns]
