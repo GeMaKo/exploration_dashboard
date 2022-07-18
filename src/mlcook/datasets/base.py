@@ -30,6 +30,14 @@ class Dataset(metaclass=abc.ABCMeta):
     def get_numerical_features(self) -> tuple[str]:
         pass
 
+    @abc.abstractclassmethod
+    def is_regression(self) -> bool:
+        pass
+    
+    @abc.abstractclassmethod
+    def is_classification(self) -> bool:
+        pass
+    
     def has_geolocation(self) -> bool:
         return (
             set(self.data.columns) & set(["lat", "lon", "latitude", "longitude"])
