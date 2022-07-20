@@ -1,4 +1,3 @@
-import seaborn as sns
 import streamlit as st
 from PIL import Image
 
