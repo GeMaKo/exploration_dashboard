@@ -18,8 +18,8 @@ else:
     dataset = st.session_state["dataset"]
     df = dataset.data
 
-    feature = st.selectbox("Variable", options=dataset.get_numerical_features())
-    hue_options = dataset.get_categorical_features()
+    feature = st.selectbox("Variable", options=dataset.numerical_features)
+    hue_options = dataset.categorical_features
     if dataset.is_classification():
         hue_options += (dataset.target,)
     hue_options += (None,)
@@ -34,8 +34,8 @@ else:
     st.write("### Histogramme")
 
     bins = st.select_slider("Anzahl Bins", options=[5, 10, 20, 50, 100])
-    kde = st.checkbox("Dichteschätzer")
-    log_scale = st.checkbox("Log. Skalierung")
+    kde = st.checkbox("Dichteschätzer", value=False)
+    log_scale = st.checkbox("Log. Skalierung", value=False)
 
     def hist_plot(
         col: str, bins: int, kde: bool = False, log_scale: bool = False, hue: str = None

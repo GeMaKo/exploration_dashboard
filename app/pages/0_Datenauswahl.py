@@ -44,10 +44,11 @@ st.dataframe(df.head())
 with st.expander("Beschreibung anzeigen"):
     st.write(dataset.descr)
 
-if dataset == "California Housing":
-    df.columns = [col.lower() for col in df.columns]
+if dataset.geo_features:
+    df_map = df.loc[:, dataset.geo_features]
+    df_map.columns = ["lat", "lon"]        
     # More dimensions
-    st.map(df)
+    st.map(df_map)
 
 if dataset == "Digits":
     fig, ax = plt.subplots(1, 5)
