@@ -8,7 +8,7 @@ class Dataset(metaclass=abc.ABCMeta):
         self.data = pd.DataFrame()
         self.target = ""
         self.X = pd.DataFrame()
-        self.y = pd.Series()
+        self.y = pd.Series(dtype=str)
         self.descr = ""
 
         self._load_data()
@@ -18,32 +18,32 @@ class Dataset(metaclass=abc.ABCMeta):
         if not hasattr(cls, 'name'):
             raise TypeError("Subclass must define class attribute 'name'")
 
-    @abc.abstractclassmethod
+    @abc.abstractmethod
     def _load_data(self) -> None:
         pass
-
-    @abc.abstractclassmethod
-    def get_categorical_features(self) -> tuple[str]:
-        pass
-
-    @abc.abstractclassmethod
-    def get_numerical_features(self) -> tuple[str]:
-        pass
-
-    @abc.abstractclassmethod
+    
+    @abc.abstractmethod
     def is_regression(self) -> bool:
         pass
     
-    @abc.abstractclassmethod
     def is_classification(self) -> bool:
+        return not self.is_regression()
+
+    @property
+    @abc.abstractmethod
+    def categorical_features(self) -> tuple[str]:
+        pass
+
+    @property
+    @abc.abstractmethod
+    def numerical_features(self) -> tuple[str]:
         pass
     
-    def has_geolocation(self) -> bool:
-        return (
-            set(self.data.columns) & set(["lat", "lon", "latitude", "longitude"])
-            != set()
-        )
-
+    @property
+    def geo_features(self) -> tuple[str]:
+        """Return the names of the geolocation features in order latitude, longitude"""
+        return tuple()
+    
     @property
     def features(self) -> tuple[str]:
         return tuple(self.X.columns)
