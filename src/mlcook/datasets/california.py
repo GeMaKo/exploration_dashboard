@@ -24,7 +24,7 @@ class CaliforniaDataset(Dataset):
 
     @property
     def numerical_features(self):
-        return tuple(self.X.columns)
+        return tuple(self.data.columns)
     
     @property
     def geo_features(self):

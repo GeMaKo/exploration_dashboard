@@ -109,7 +109,8 @@ else:
     if dataset.is_classification():
         opt_selections += (dataset.target,)
     opt_selections += (None,)
-        
+    
+    widget_key += 1
     scatter_color = st.selectbox(
         "Farbe",
         options=opt_selections,
