@@ -42,7 +42,7 @@ else:
         if hue is None:
             hue_values = None
         else:
-            df[hue].astype(str)
+            hue_values = df[hue].astype(str)
 
         sns.histplot(
             df,
