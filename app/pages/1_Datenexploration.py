@@ -11,15 +11,19 @@ st.set_page_config(page_title="Datenverständnis")
 st.markdown("# Datenverständnis")
 st.sidebar.header("Datenverständnis")
 
-if "data" not in st.session_state:
+if "dataset" not in st.session_state:
     st.error("Bitte zuerst einen Datensatz auswählen!")
     st.markdown("[Datenauswahl](Datenauswahl)")
 else:
-    data = st.session_state["data"]
-    df = data["frame"]
+    dataset = st.session_state["dataset"]
+    df = dataset.data
 
-    feature = st.selectbox("Variable", options=df.columns)
-    hue_options = list(df.columns) + [None]
+    feature = st.selectbox("Variable", options=dataset.numerical_features)
+    hue_options = dataset.categorical_features
+    if dataset.is_classification():
+        hue_options += (dataset.target,)
+    hue_options += (None,)
+
     hue_var = st.selectbox(
         "Trennvariable", options=hue_options, index=hue_options.index(None)
     )
@@ -30,8 +34,8 @@ else:
     st.write("### Histogramme")
 
     bins = st.select_slider("Anzahl Bins", options=[5, 10, 20, 50, 100])
-    kde = st.checkbox("Dichteschätzer")
-    log_scale = st.checkbox("Log. Skalierung")
+    kde = st.checkbox("Dichteschätzer", value=False)
+    log_scale = st.checkbox("Log. Skalierung", value=False)
 
     def hist_plot(
         col: str, bins: int, kde: bool = False, log_scale: bool = False, hue: str = None
@@ -39,10 +43,7 @@ else:
 
         fig, ax = plt.subplots()
 
-        if hue is None:
-            hue_values = None
-        else:
-            hue_values = hue
+        hue_values = df[hue].astype(str) if hue is not None else None
 
         sns.histplot(
             df,
@@ -80,7 +81,6 @@ else:
 
     show_outlier = st.checkbox("Zeige Outlier", value=True)
 
-    @st.cache(allow_output_mutation=True)
     def box_plot(col: str, show_outlier: bool = True):
 
         fig, ax = plt.subplots()
@@ -105,7 +105,11 @@ else:
     scatter_x = st.selectbox("X-Achse", options=df.columns, key=widget_key, index=0)
     widget_key += 1
     scatter_y = st.selectbox("Y-Achse", options=df.columns, key=widget_key, index=1)
-    opt_selections = [x for x in df.columns] + [None]
+    opt_selections = dataset.features
+    if dataset.is_classification():
+        opt_selections += (dataset.target,)
+    opt_selections += (None,)
+
     scatter_color = st.selectbox(
         "Farbe",
         options=opt_selections,
