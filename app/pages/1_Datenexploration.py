@@ -23,7 +23,7 @@ else:
     if dataset.is_classification():
         hue_options += (dataset.target,)
     hue_options += (None,)
-    
+
     hue_var = st.selectbox(
         "Trennvariable", options=hue_options, index=hue_options.index(None)
     )
@@ -109,7 +109,7 @@ else:
     if dataset.is_classification():
         opt_selections += (dataset.target,)
     opt_selections += (None,)
-        
+
     scatter_color = st.selectbox(
         "Farbe",
         options=opt_selections,
@@ -139,11 +139,7 @@ else:
         if scatter_color is None:
             hue_values = None
         else:
-            hue_values = (
-                scatter_color
-                if df[scatter_color].nunique() > 10
-                else df[scatter_color].astype(str)
-            )
+            hue_values = scatter_color
 
         sns.scatterplot(
             data=df,
