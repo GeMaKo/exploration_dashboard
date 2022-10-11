@@ -135,11 +135,7 @@ else:
         if scatter_color is None:
             hue_values = None
         else:
-            hue_values = (
-                scatter_color
-                if df[scatter_color].nunique() > 10
-                else df[scatter_color].astype(str)
-            )
+            hue_values = scatter_color
 
         sns.scatterplot(
             data=df,
