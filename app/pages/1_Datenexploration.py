@@ -135,7 +135,7 @@ else:
     scatter_x = st.selectbox("X-Achse", options=df.columns, key=widget_key, index=0)
     widget_key += 1
     scatter_y = st.selectbox("Y-Achse", options=df.columns, key=widget_key, index=1)
-    opt_selections = dataset.features
+    opt_selections = df.columns
     if dataset.is_classification():
         opt_selections += (dataset.target,)
     opt_selections += (None,)
