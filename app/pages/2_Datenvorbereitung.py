@@ -14,13 +14,12 @@ def box_plot(col: str, show_outlier: bool = True):
     fig, ax = plt.subplots()
     fig_data = ax.boxplot(
         df[col],
-        labels=col,
         bootstrap=1000,
         autorange=True,
         showmeans=True,
         showfliers=show_outlier,
     )
-    ax.set_xticklabels(ax.get_xticks(), rotation=30)
+    ax.set_xticklabels(col, rotation=30)
 
     return fig
 
