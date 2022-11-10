@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import streamlit as st
 import pandas as pd
+import numpy as np
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import make_pipeline
@@ -39,7 +40,9 @@ else:
     scale = make_pipeline(StandardScaler())
 
     st.write("#### Scaled data")
-    df_scaled = df.copy()
-    df_scaled[df.columns] = scale.fit(dataset.data)
+    df_scaled = pd.DataFrame(np.zeros(df.shape))
+    df_scaled.index = df.index
+    df_scaled.columns = df.columns
+    df_scaled[df_scaled.columns] = scale.fit(dataset.data)
     st.dataframe(df_scaled.head())
     dist_plot = st.pyplot(box_plot(df_scaled, df.columns, False))
