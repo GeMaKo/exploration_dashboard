@@ -45,20 +45,6 @@ def hist_plot(
     return fig
 
 
-def box_plot(col: str, show_outlier: bool = True):
-
-    fig, ax = plt.subplots()
-    fig_data = ax.boxplot(
-        df[col],
-        bootstrap=1000,
-        autorange=True,
-        showmeans=True,
-        showfliers=show_outlier,
-    )
-
-    return fig
-
-
 def scatter_plot(
     scatter_x: str,
     scatter_y: str,
@@ -135,9 +121,8 @@ else:
     scatter_x = st.selectbox("X-Achse", options=df.columns, key=widget_key, index=0)
     widget_key += 1
     scatter_y = st.selectbox("Y-Achse", options=df.columns, key=widget_key, index=1)
-    opt_selections = df.columns
-    if dataset.is_classification():
-        opt_selections += (dataset.target,)
+    opt_selections = dataset.features
+    opt_selections += (dataset.target,)
     opt_selections += (None,)
     widget_key += 1
     scatter_color = st.selectbox(
