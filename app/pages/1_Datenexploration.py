@@ -45,6 +45,19 @@ def hist_plot(
     return fig
 
 
+def box_plot(col: str, show_outlier: bool = True):
+    fig, ax = plt.subplots()
+    fig_data = ax.boxplot(
+        df[col],
+        bootstrap=1000,
+        autorange=True,
+        showmeans=True,
+        showfliers=show_outlier,
+    )
+
+    return fig
+
+
 def scatter_plot(
     scatter_x: str,
     scatter_y: str,
