@@ -20,6 +20,7 @@ def box_plot(col: str, show_outlier: bool = True):
         showmeans=True,
         showfliers=show_outlier,
     )
+    ax.set_xticklabels(ax.get_xticks(), rotation=30)
 
     return fig
 
