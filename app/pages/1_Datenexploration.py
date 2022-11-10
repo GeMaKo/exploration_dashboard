@@ -46,9 +46,10 @@ def hist_plot(
 
 
 def box_plot(col: str, show_outlier: bool = True):
-    fig, ax = plt.subplots()
+    fig, ax = plt.labels = col, subplots()
     fig_data = ax.boxplot(
         df[col],
+        labels=col,
         bootstrap=1000,
         autorange=True,
         showmeans=True,
