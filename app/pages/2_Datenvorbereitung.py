@@ -37,12 +37,10 @@ else:
     st.dataframe(df.head())
     st.write("#### Raw data")
     dist_plot = st.pyplot(box_plot(df, df.columns, False))
-    scale = make_pipeline(StandardScaler())
 
     st.write("#### Scaled data")
-    df_scaled = pd.DataFrame(np.zeros(df.shape))
-    df_scaled.index = df.index
-    df_scaled.columns = df.columns
-    df_scaled[df_scaled.columns] = scale.fit(dataset.data)
+    df_scaled = df.copy()
+    scale = make_pipeline(StandardScaler(df_scaled))
+    df_scaled[df_scaled.columns] = scale.fit(df)
     st.dataframe(df_scaled.head())
     dist_plot = st.pyplot(box_plot(df_scaled, df.columns, False))
