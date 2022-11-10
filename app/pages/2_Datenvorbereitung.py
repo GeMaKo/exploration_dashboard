@@ -14,7 +14,7 @@ st.sidebar.header("Datenvorbereitung")
 def box_plot(df, col: str, show_outlier: bool = True):
     fig, ax = plt.subplots()
     fig_data = ax.boxplot(
-        df[col].iloc[:250],
+        df[col],
         bootstrap=1000,
         autorange=True,
         showmeans=True,
@@ -37,10 +37,7 @@ else:
     st.write("#### Raw data")
     dist_plot = st.pyplot(df, box_plot(df.columns, False))
     scale = make_pipeline(StandardScaler())
-    
+
     st.write("#### Scaled data")
     df_scaled = scale.fit(df[dataset.features], df[dataset.target])
     dist_plot = st.pyplot(df_scaled, box_plot(df.columns, False))
-
-
-    
