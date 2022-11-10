@@ -41,4 +41,5 @@ else:
     st.write("#### Scaled data")
     df_scaled = df.copy()
     df_scaled[df.columns] = scale.fit(dataset.data)
+    st.dataframe(df_scaled.head())
     dist_plot = st.pyplot(box_plot(df_scaled, df.columns, False))
