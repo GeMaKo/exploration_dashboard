@@ -35,9 +35,9 @@ else:
     st.write("### Normalization")
     st.dataframe(df.head())
     st.write("#### Raw data")
-    dist_plot = st.pyplot(df, box_plot(df.columns, False))
+    dist_plot = st.pyplot(box_plot(df, df.columns, False))
     scale = make_pipeline(StandardScaler())
 
     st.write("#### Scaled data")
     df_scaled = scale.fit(df[dataset.features], df[dataset.target])
-    dist_plot = st.pyplot(df_scaled, box_plot(df.columns, False))
+    dist_plot = st.pyplot(box_plot(df_scaled, df.columns, False))
