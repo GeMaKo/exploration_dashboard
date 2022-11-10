@@ -39,5 +39,6 @@ else:
     scale = make_pipeline(StandardScaler())
 
     st.write("#### Scaled data")
-    df_scaled = scale.fit(df[dataset.features], df[dataset.target])
+    df_scaled = df.copy()
+    df_scaled[df.columns] = scale.fit(dataset.data)
     dist_plot = st.pyplot(box_plot(df_scaled, df.columns, False))
