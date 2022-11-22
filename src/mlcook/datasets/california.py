@@ -9,26 +9,29 @@ class CaliforniaDataset(Dataset):
 
     def _load_data(self):
         bunch = fetch_california_housing(as_frame=True)
-        target_name = bunch["target_names"][0]
+        local_data = pd.read_csv("data/housing.csv")
+        local_data = local_data.dropna()
+        target_name = "median_house_value"
 
-        df: pd.DataFrame = bunch["frame"]
+        df: pd.DataFrame = local_data
         self.data = df
-        self.X = bunch["data"]
+        self.X = df.loc[:, df.columns != target_name]
         self.target = target_name
         self.y = df[target_name]
         self.descr = bunch["DESCR"]
 
     @property
     def categorical_features(self):
-        return tuple()
+        return ("ocean_proximity",)
 
     @property
     def numerical_features(self):
-        return tuple(self.X.columns)
+        num_cols = self.X.loc[:, self.X.columns != "ocean_proximity"].columns
+        return tuple(num_cols)
 
     @property
     def geo_features(self):
-        return ("Latitude", "Longitude")
+        return ("latitude", "longitude")
 
     def is_regression(self):
         return True
