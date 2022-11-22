@@ -3,6 +3,9 @@ name = "mlcook"
 version = "0.1.0"
 description = "Dashboards to play with machine learning and data science concepts, for educational purposes"
 authors = ["Michael Aydinbas <michael.aydinbas@gmail.com>", "Gerrit Matti Korff <matti.gerrit.korff@exxeta.com>"]
+packages = [
+    { include = "mlcook", from = "src"},
+]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.12"

@@ -97,7 +97,10 @@ else:
     dataset = st.session_state["dataset"]
     df = dataset.data
 
-    feature = st.selectbox("Variable", options=dataset.numerical_features)
+    feat_selections = dataset.numerical_features
+    if dataset.is_regression():
+        feat_selections += (dataset.target,)
+    feature = st.selectbox("Variable", options=feat_selections)
     hue_options = dataset.categorical_features
     if dataset.is_classification():
         hue_options += (dataset.target,)

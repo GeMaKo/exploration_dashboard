@@ -40,7 +40,8 @@ else:
 
     st.write("#### Scaled data")
     df_scaled = df.copy()
-    scale = make_pipeline(StandardScaler())
-    df_scaled[df_scaled.columns] = scale.fit(df)
+    df_scaled[df_scaled.columns] = StandardScaler().fit_transform(df)
     st.dataframe(df_scaled.head())
     dist_plot = st.pyplot(box_plot(df_scaled, df.columns, False))
+
+
