@@ -75,7 +75,7 @@ max_depth_selection = st.select_slider(
 )
 
 
-@st.cache(allow_output_mutation=True)
+@st.cache_resource
 def overfitting_plot(max_depth_selection):
     for max_depth in range(1, max_depth_selection):
         # DT = DecisionTreeRegressor(max_depth=max_depth)

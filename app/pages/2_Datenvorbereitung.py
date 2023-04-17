@@ -34,8 +34,6 @@ else:
 
     st.write("### Normalization")
     st.dataframe(df.head())
-    print(df.info())
-    print(df.describe())
     st.write("#### Raw data")
     dist_plot = st.pyplot(box_plot(df, df.columns.tolist(), True))
 
