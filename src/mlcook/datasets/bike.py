@@ -1,5 +1,7 @@
+"""
+Definition of the Bike dataset
+"""
 import pandas as pd
-import textwrap
 from .base import Dataset
 
 
@@ -49,13 +51,11 @@ class BikeDataset(Dataset):
 
     @property
     def categorical_features(self):
-        return ("Seasons", "Holiday", "Functioning Day")
+        return ("Date", "Seasons", "Holiday", "Functioning Day")
 
     @property
     def numerical_features(self):
-        return tuple(
-            set(self.data.columns) - set(self.categorical_features)
-        )
+        return tuple(set(self.data.columns) - set(self.categorical_features))
 
     def is_regression(self):
         return True

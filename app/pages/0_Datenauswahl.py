@@ -1,3 +1,6 @@
+"""
+Streamlit Page to select the dataset for analysis
+"""
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -16,6 +19,7 @@ st.sidebar.markdown("#### [Auswahl Datensatz](#auswahl-datensatz)")
 
 # MAIN PAGE
 manager = DatasetManager()
+
 
 def load_data_into_session(dataset: str):
     st.session_state["dataset"] = manager.init_dataset(dataset)
@@ -40,9 +44,13 @@ df: pd.DataFrame = dataset.data
 st.write(f"Anzahl Beispiele: {df.shape[0]}")
 st.write(f"Anzahl Dimensionen: {df.shape[1]}")
 
+
 def sample_data():
-    st.dataframe(df.sample(5).style.apply(lambda x: np.where(pd.isna(x), "color: red;", None)))
-    
+    st.dataframe(
+        df.sample(5).style.apply(lambda x: np.where(pd.isna(x), "color: red;", None))
+    )
+
+
 if st.button("Beispiel anzeigen"):
     sample_data()
 
@@ -51,7 +59,7 @@ with st.expander("Beschreibung anzeigen"):
 
 if dataset.geo_features:
     df_map = df.loc[:, dataset.geo_features]
-    df_map.columns = ["lat", "lon"]        
+    df_map.columns = ["lat", "lon"]
     # More dimensions
     st.map(df_map)
 

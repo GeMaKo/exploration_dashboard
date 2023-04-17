@@ -14,6 +14,7 @@ class CaliforniaDataset(Dataset):
         target_name = "median_house_value"
 
         df: pd.DataFrame = local_data
+        df = df.sample(10000)
         self.data = df
         self.X = df.loc[:, df.columns != target_name]
         self.target = target_name
