@@ -122,11 +122,12 @@ else:
     st.pyplot(hist_plot(feature, bins, kde, log_scale, hue_var))
 
     st.sidebar.markdown("#### [Box Plots](#box-plots) ")
+
     st.write("### Box Plots")
+    with st.expander("Box Plots"):
+        show_outlier = st.checkbox("Zeige Outlier", value=True)
 
-    show_outlier = st.checkbox("Zeige Outlier", value=True)
-
-    st.pyplot(box_plot(feature, show_outlier))
+        st.pyplot(box_plot(feature, show_outlier))
 
     # Multivariate Plots
     st.sidebar.markdown("## Multivariate Plots")
