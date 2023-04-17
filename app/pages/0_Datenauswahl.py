@@ -1,9 +1,10 @@
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import streamlit as st
 
-from mlcook.datasets.manager import DatasetManager
 from mlcook.datasets.base import Dataset
+from mlcook.datasets.manager import DatasetManager
 
 st.set_page_config(page_title="Machine Learning Workflow - Datenauswahl", layout="wide")
 
@@ -39,7 +40,11 @@ df: pd.DataFrame = dataset.data
 st.write(f"Anzahl Beispiele: {df.shape[0]}")
 st.write(f"Anzahl Dimensionen: {df.shape[1]}")
 
-st.dataframe(df.head())
+def sample_data():
+    st.dataframe(df.sample(5).style.apply(lambda x: np.where(pd.isna(x), "color: red;", None)))
+    
+if st.button("Beispiel anzeigen"):
+    sample_data()
 
 with st.expander("Beschreibung anzeigen"):
     st.write(dataset.descr)

@@ -54,7 +54,7 @@ class BikeDataset(Dataset):
     @property
     def numerical_features(self):
         return tuple(
-            list(self.data.drop(columns=list(self.categorical_features)).columns)
+            set(self.data.columns) - set(self.categorical_features)
         )
 
     def is_regression(self):
