@@ -9,9 +9,8 @@ class TitanicDataset(Dataset):
 
     def _load_data(self):
         df: pd.DataFrame = sns.load_dataset("titanic")
-        df = df.rename(columns={"target": "class"})
         y = "survived"
-        self.data = df
+        self.data = df.drop(columns=["deck"])
         self.X = df.drop(columns=[y, "deck"])
         self.y = df["survived"]
         self.target = "survived"
