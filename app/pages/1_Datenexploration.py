@@ -23,7 +23,7 @@ def hist_plot(
         stat="count",
         log_scale=log_scale,
         hue=hue_values,
-        stacked=True,
+        multiple="stack",
     )
     min_ylim, max_ylim = ax.get_ylim()
     min_xlim, max_xlim = ax.get_xlim()
