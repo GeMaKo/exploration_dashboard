@@ -8,7 +8,7 @@ class TitanicDataset(Dataset):
     name = "Titanic"
 
     def _load_data(self):
-        df: pd.DataFrame = sns.load_dataset("titanic")(as_frame=True)
+        df: pd.DataFrame = sns.load_dataset("titanic")
         df = df.rename(columns={"target": "class"})
         y = "survived"
         self.data = df
