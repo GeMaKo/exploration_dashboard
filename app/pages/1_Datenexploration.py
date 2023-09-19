@@ -10,7 +10,6 @@ sns.set_palette("tab10")
 def hist_plot(
     col: str, bins: int, kde: bool = False, log_scale: bool = False, hue: str = None
 ):
-
     fig, ax = plt.subplots()
 
     hue_values = df[hue].astype(str) if hue is not None else None
@@ -24,6 +23,7 @@ def hist_plot(
         stat="count",
         log_scale=log_scale,
         hue=hue_values,
+        stacked=True,
     )
     min_ylim, max_ylim = ax.get_ylim()
     min_xlim, max_xlim = ax.get_xlim()
@@ -65,7 +65,6 @@ def scatter_plot(
     scatter_size: str,
     alpha: float,
 ):
-
     fig, ax = plt.subplots()
 
     if scatter_color is None:
