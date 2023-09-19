@@ -12,7 +12,7 @@ class TitanicDataset(Dataset):
         df = df.rename(columns={"target": "class"})
         y = "survived"
         self.data = df
-        self.X = df.drop(columns=[y])
+        self.X = df.drop(columns=[y, "deck"])
         self.y = df["survived"]
         self.target = "survived"
         self.descr = ""
