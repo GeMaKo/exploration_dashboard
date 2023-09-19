@@ -4,7 +4,7 @@ import seaborn as sns
 from .base import Dataset
 
 
-class IrisDataset(Dataset):
+class TitanicDataset(Dataset):
     name = "Titanic"
 
     def _load_data(self):
