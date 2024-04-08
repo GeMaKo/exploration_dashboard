@@ -61,7 +61,16 @@ class BikeDataset(Dataset):
 
     @property
     def numerical_features(self):
-        return tuple(set(self.data.columns) - set(self.categorical_features))
+        return (
+            "Temperature(°C)",
+            "Humidity(%)",
+            "Wind speed (m/s)",
+            "Visibility (10m)",
+            "Dew point temperature(°C)",
+            "Solar Radiation (MJ/m2)",
+            "Rainfall(mm)",
+            "Snowfall (cm)",
+        )
 
     def is_regression(self):
         return True

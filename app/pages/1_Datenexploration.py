@@ -52,11 +52,6 @@ def box_plot(col: str, group: str, hue: str):
         x=group,
         y=col,
         hue=hue,
-        # labels=(col,),
-        # bootstrap=1000,
-        # autorange=True,
-        # showmeans=True,
-        # showfliers=show_outlier,
         ax=ax,
     )
     return fig

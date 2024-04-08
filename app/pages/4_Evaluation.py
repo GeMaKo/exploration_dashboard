@@ -1,15 +1,13 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import streamlit as st
 import pandas as pd
-from sklearn.preprocessing import LabelEncoder
-from sklearn.tree import DecisionTreeRegressor
-from sklearn.metrics import mean_squared_error
-import matplotlib.pyplot as plt
+import streamlit as st
 from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.metrics import mean_squared_error
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder, StandardScaler
+from sklearn.tree import DecisionTreeRegressor
 
 labelencoder = LabelEncoder()
 
@@ -28,22 +26,25 @@ housing_features = housing_data.drop("median_house_value", axis=1).copy()
 
 from sklearn.model_selection import train_test_split
 
+dataset = st.session_state["dataset"]
+df = dataset.data
 
-categorical_features = ["ocean_proximity"]
-numeric_features = [
-    "longitude",
-    "latitude",
-    "housing_median_age",
-    "total_rooms",
-    "total_bedrooms",
-    "population",
-    "households",
-    "median_income",
-]
+X = dataset.X
+y = dataset.y
+X = X.select_dtypes(exclude="datetime")
 
+# Data Split
 X_train, X_test, y_train, y_test = train_test_split(
-    housing_features, housing_labels, test_size=0.2, random_state=42
+    X,
+    y,
+    train_size=None,
+    shuffle=True,
+    random_state=42,
 )
+
+cat_features = list(dataset.categorical_features)
+cat_features.remove("Date")
+num_features = list(dataset.numerical_features)
 
 numeric_transformer = Pipeline(
     steps=[
@@ -61,8 +62,8 @@ categorical_transformer = Pipeline(
 
 preprocessor = ColumnTransformer(
     transformers=[
-        ("num", numeric_transformer, numeric_features),
-        ("cat", categorical_transformer, categorical_features),
+        ("num", numeric_transformer, num_features),
+        ("cat", categorical_transformer, cat_features),
     ]
 )
 
