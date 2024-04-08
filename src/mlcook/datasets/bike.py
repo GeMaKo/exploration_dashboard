@@ -1,7 +1,11 @@
 """
 Definition of the Bike dataset
 """
+
+from pathlib import Path
+
 import pandas as pd
+
 from .base import Dataset
 
 
@@ -9,8 +13,10 @@ class BikeDataset(Dataset):
     name = "Bike"
 
     def _load_data(self):
-        dataset_url = "https://archive.ics.uci.edu/ml/machine-learning-databases/00560/SeoulBikeData.csv"
-        df: pd.DataFrame = pd.read_csv(dataset_url, encoding="latin")
+        # dataset_url = "https://archive.ics.uci.edu/ml/machine-learning-databases/00560/SeoulBikeData.csv"
+        dataset_folder = Path(__file__).parent.parent.parent.parent / "data"
+        local_data = dataset_folder / "SeoulBikeData.csv"
+        df: pd.DataFrame = pd.read_csv(local_data, encoding="latin")
         df["Date"] = pd.to_datetime(df["Date"], dayfirst=True)
 
         y = "Rented Bike Count"
@@ -51,7 +57,7 @@ class BikeDataset(Dataset):
 
     @property
     def categorical_features(self):
-        return ("Date", "Seasons", "Holiday", "Functioning Day")
+        return ("Seasons", "Holiday", "Hour", "Functioning Day", "Date")
 
     @property
     def numerical_features(self):

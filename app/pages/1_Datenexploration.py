@@ -45,15 +45,19 @@ def hist_plot(
     return fig
 
 
-def box_plot(col: str, show_outlier: bool = True):
+def box_plot(col: str, group: str, hue: str):
     fig, ax = plt.subplots()
-    fig_data = ax.boxplot(
-        df[col],
-        labels=(col,),
-        bootstrap=1000,
-        autorange=True,
-        showmeans=True,
-        showfliers=show_outlier,
+    fig_data = sns.boxplot(
+        data=df,
+        x=group,
+        y=col,
+        hue=hue,
+        # labels=(col,),
+        # bootstrap=1000,
+        # autorange=True,
+        # showmeans=True,
+        # showfliers=show_outlier,
+        ax=ax,
     )
     return fig
 
@@ -84,6 +88,25 @@ def scatter_plot(
     return fig
 
 
+def kde_plot(
+    kde_x: str,
+    kde_y: str,
+    kde_color: str,
+    kde_fill: bool,
+):
+    fig, ax = plt.subplots()
+
+    sns.kdeplot(
+        data=df,
+        x=kde_x,
+        y=kde_y,
+        hue=kde_color,
+        fill=kde_fill,
+        ax=ax,
+    )
+    return fig
+
+
 st.set_page_config(page_title="Datenverständnis")
 
 st.markdown("# Datenverständnis")
@@ -95,66 +118,134 @@ if "dataset" not in st.session_state:
 else:
     dataset = st.session_state["dataset"]
     df = dataset.data
+    opt_selections = dataset.features
+    opt_selections += (dataset.target,)
+    opt_selections += (None,)
 
     feat_selections = dataset.numerical_features
     if dataset.is_regression():
         feat_selections += (dataset.target,)
-    feature = st.selectbox("Variable", options=feat_selections)
+
     hue_options = dataset.categorical_features
     if dataset.is_classification():
         hue_options += (dataset.target,)
     hue_options += (None,)
 
-    hue_var = st.selectbox(
-        "Trennvariable", options=hue_options, index=hue_options.index(None)
-    )
-
+    widget_key = 0
     # Univariate Plots
     st.sidebar.markdown("## Univariate Plots")
     st.sidebar.markdown("#### [Histogramme](#histogramme) ")
     st.write("### Histogramme")
-
-    bins = st.select_slider("Anzahl Bins", options=[5, 10, 20, 50, 100])
-    kde = st.checkbox("Dichteschätzer", value=False)
-    log_scale = st.checkbox("Log. Skalierung", value=False)
-
-    st.pyplot(hist_plot(feature, bins, kde, log_scale, hue_var))
+    with st.expander("Histogramme"):
+        feature = st.selectbox(
+            "Variable",
+            options=feat_selections,
+            key=widget_key,
+        )
+        widget_key += 1
+        hue_var = st.selectbox(
+            "Trennvariable",
+            options=hue_options,
+            index=hue_options.index(None),
+            key=widget_key,
+        )
+        widget_key += 1
+        bins = st.select_slider(
+            "Anzahl Bins",
+            options=[5, 10, 20, 50, 100],
+            key=widget_key,
+        )
+        widget_key += 1
+        kde = st.checkbox(
+            "Dichteschätzer",
+            value=False,
+            key=widget_key,
+        )
+        widget_key += 1
+        log_scale = st.checkbox(
+            "Log. Skalierung",
+            value=False,
+            key=widget_key,
+        )
+        widget_key += 1
+        st.pyplot(hist_plot(feature, bins, kde, log_scale, hue_var))
 
     st.sidebar.markdown("#### [Box Plots](#box-plots) ")
 
     st.write("### Box Plots")
     with st.expander("Box Plots"):
-        show_outlier = st.checkbox("Zeige Outlier", value=True)
-
-        st.pyplot(box_plot(feature, show_outlier))
+        box_feature = st.selectbox("Variable", options=feat_selections)
+        box_group = st.selectbox(
+            "Gruppierung",
+            options=hue_options,
+            key=widget_key,
+            index=hue_options.index(None),
+        )
+        widget_key += 1
+        box_color = st.selectbox(
+            "Farbe",
+            options=hue_options,
+            key=widget_key,
+            index=hue_options.index(None),
+        )
+        widget_key += 1
+        st.pyplot(box_plot(box_feature, box_group, box_color))
 
     # Multivariate Plots
     st.sidebar.markdown("## Multivariate Plots")
     st.sidebar.markdown("#### [Scatter Plots](#scatter-plots) ")
     st.write("### Scatter Plots")
+    with st.expander("Scatter Plots"):
 
-    widget_key = 0
-    scatter_x = st.selectbox("X-Achse", options=df.columns, key=widget_key, index=0)
-    widget_key += 1
-    scatter_y = st.selectbox("Y-Achse", options=df.columns, key=widget_key, index=1)
-    opt_selections = dataset.features
-    opt_selections += (dataset.target,)
-    opt_selections += (None,)
-    widget_key += 1
-    scatter_color = st.selectbox(
-        "Farbe",
-        options=opt_selections,
-        key=widget_key,
-        index=opt_selections.index(None),
-    )
-    widget_key += 1
-    scatter_size = st.selectbox(
-        "Größe",
-        options=opt_selections,
-        key=widget_key,
-        index=opt_selections.index(None),
-    )
-    widget_key += 1
-    alpha = st.slider("Alpha", min_value=0.01, max_value=1.0, value=0.7)
+        scatter_x = st.selectbox(
+            "X-Achse", options=opt_selections, key=widget_key, index=0
+        )
+        widget_key += 1
+        scatter_y = st.selectbox(
+            "Y-Achse", options=opt_selections, key=widget_key, index=1
+        )
 
-    st.pyplot(scatter_plot(scatter_x, scatter_y, scatter_color, scatter_size, alpha))
+        widget_key += 1
+        scatter_color = st.selectbox(
+            "Farbe",
+            options=opt_selections,
+            key=widget_key,
+            index=opt_selections.index(None),
+        )
+        widget_key += 1
+        scatter_size = st.selectbox(
+            "Größe",
+            options=opt_selections,
+            key=widget_key,
+            index=opt_selections.index(None),
+        )
+        widget_key += 1
+        alpha = st.slider("Alpha", min_value=0.01, max_value=1.0, value=0.7)
+
+        st.pyplot(
+            scatter_plot(scatter_x, scatter_y, scatter_color, scatter_size, alpha)
+        )
+
+    st.sidebar.markdown("#### [Dichte Plots](#scatter-plots) ")
+    st.write("### Dichte Plots")
+    with st.expander("Dichte Plots"):
+
+        kde_x = st.selectbox("X-Achse", options=opt_selections, key=widget_key, index=0)
+        widget_key += 1
+        kde_y = st.selectbox("Y-Achse", options=opt_selections, key=widget_key, index=1)
+
+        widget_key += 1
+        kde_color = st.selectbox(
+            "Farbe",
+            options=opt_selections,
+            key=widget_key,
+            index=opt_selections.index(None),
+        )
+        widget_key += 1
+        kde_fill = st.checkbox(
+            "Fill",
+            value=False,
+            key=widget_key,
+        )
+        widget_key += 1
+        st.pyplot(kde_plot(kde_x, kde_y, kde_color, kde_fill))

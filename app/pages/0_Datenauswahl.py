@@ -62,7 +62,7 @@ if dataset.geo_features:
     df_map = df.loc[:, dataset.geo_features]
     df_map.columns = ["lat", "lon"]
     # More dimensions
-    st.map(df_map)
+    st.map(df_map.dropna())
 
 if dataset == "Digits":
     fig, ax = plt.subplots(1, 5)
