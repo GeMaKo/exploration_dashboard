@@ -1,10 +1,9 @@
 import matplotlib.pyplot as plt
-import streamlit as st
-import pandas as pd
 import numpy as np
-from sklearn.preprocessing import LabelEncoder
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
+import pandas as pd
+import streamlit as st
 from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import LabelEncoder, MinMaxScaler, StandardScaler
 
 st.set_page_config(page_title="Datenvorbereitung")
 
@@ -46,6 +45,3 @@ else:
     df_minmax_scaler[df_minmax_scaler.columns] = MinMaxScaler().fit_transform(df)
     st.dataframe(df_minmax_scaler.head())
     dist_plot = st.pyplot(box_plot(df_minmax_scaler, df.columns, True))
-
-
-

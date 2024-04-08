@@ -1,8 +1,11 @@
 """
 Definition of the Ames Housing dataset
 """
+
 from pathlib import Path
+
 import pandas as pd
+
 from .base import Dataset
 
 
