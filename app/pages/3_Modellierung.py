@@ -78,12 +78,14 @@ else:
     with st.expander("Lineare Regression"):
         numeric_transformer = Pipeline(
             steps=[
+                ("imputer", SimpleImputer(strategy="median")),
                 ("scale", StandardScaler()),
             ]
         )
 
         categorical_transformer = Pipeline(
             steps=[
+                ("most_frequent_imputer", SimpleImputer(strategy="most_frequent")),
                 ("encoder", OneHotEncoder(handle_unknown="ignore")),
             ]
         )
@@ -122,12 +124,14 @@ else:
     with st.expander("Entscheidungsbaum"):
         numeric_transformer = Pipeline(
             steps=[
+                ("imputer", SimpleImputer(strategy="median")),
                 ("scale", StandardScaler()),
             ]
         )
 
         categorical_transformer = Pipeline(
             steps=[
+                ("most_frequent_imputer", SimpleImputer(strategy="most_frequent")),
                 ("encoder", OneHotEncoder(drop="first", handle_unknown="ignore")),
             ]
         )

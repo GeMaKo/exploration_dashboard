@@ -72,5 +72,9 @@ class BikeDataset(Dataset):
             "Snowfall (cm)",
         )
 
+    @property
+    def datetime_features(self):
+        return tuple("Date")
+
     def is_regression(self):
         return True

@@ -17,6 +17,7 @@ class MelbourneDataset(Dataset):
         local_data = dataset_folder / "Melbourne_housing_FULL.csv"
         df: pd.DataFrame = pd.read_csv(local_data, na_values="NA")
         y = "Price"
+        df.dropna(subset=[y], inplace=True)
 
         # df = df.drop(columns=["PID", "Order"])
 
@@ -32,6 +33,7 @@ class MelbourneDataset(Dataset):
             "Method",
             "Regionname",
             "CouncilArea",
+            "Date",
         )
 
     @property
@@ -40,8 +42,6 @@ class MelbourneDataset(Dataset):
             "Rooms",
             "Bedroom2",
             "Bathroom",
-            "Price",
-            "Date",
             "Propertycount",
             "Distance",
             "YearBuilt",
@@ -56,6 +56,10 @@ class MelbourneDataset(Dataset):
     @property
     def geo_features(self):
         return ("Lattitude", "Longtitude")
+
+    @property
+    def datetime_features(self):
+        return tuple("Date")
 
     def is_regression(self):
         return True

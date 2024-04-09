@@ -12,20 +12,20 @@ class Dataset(metaclass=abc.ABCMeta):
         self.descr = ""
 
         self._load_data()
-        
+
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
-        if not hasattr(cls, 'name'):
+        if not hasattr(cls, "name"):
             raise TypeError("Subclass must define class attribute 'name'")
 
     @abc.abstractmethod
     def _load_data(self) -> None:
         pass
-    
+
     @abc.abstractmethod
     def is_regression(self) -> bool:
         pass
-    
+
     def is_classification(self) -> bool:
         return not self.is_regression()
 
@@ -38,12 +38,16 @@ class Dataset(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def numerical_features(self) -> tuple[str]:
         pass
-    
+
     @property
     def geo_features(self) -> tuple[str]:
         """Return the names of the geolocation features in order latitude, longitude"""
         return tuple()
-    
+
+    @property
+    def datetime_features(self):
+        return tuple()
+
     @property
     def features(self) -> tuple[str]:
         return tuple(self.X.columns)
