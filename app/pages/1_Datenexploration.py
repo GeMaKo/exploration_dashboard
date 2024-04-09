@@ -225,9 +225,13 @@ else:
     st.write("### Dichte Plots")
     with st.expander("Dichte Plots"):
 
-        kde_x = st.selectbox("X-Achse", options=opt_selections, key=widget_key, index=0)
+        kde_x = st.selectbox(
+            "X-Achse", options=feat_selections, key=widget_key, index=0
+        )
         widget_key += 1
-        kde_y = st.selectbox("Y-Achse", options=opt_selections, key=widget_key, index=1)
+        kde_y = st.selectbox(
+            "Y-Achse", options=feat_selections, key=widget_key, index=1
+        )
 
         widget_key += 1
         kde_color = st.selectbox(

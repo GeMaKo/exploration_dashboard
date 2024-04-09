@@ -18,6 +18,7 @@ class MelbourneDataset(Dataset):
         df: pd.DataFrame = pd.read_csv(local_data, na_values="NA")
         y = "Price"
         df.dropna(subset=[y], inplace=True)
+        df = df.sample(10000)
 
         # df = df.drop(columns=["PID", "Order"])
 
